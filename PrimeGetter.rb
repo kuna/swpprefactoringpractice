@@ -1,37 +1,61 @@
 class PrimeGetter
-  def self.prime_not_upper_than(n)
-    unless n.is_a? Integer
-      puts "n must be an integer."
-      return nil
-    end
-    if n < 0
-      puts "n must be greater than 0."
-      return nil
-    end
-    ar = [2]
-    i = 3
-    while (i < n) do
-      ip = true
-      ar.each do |a|
-        if (i % a == 0)
-          ip = false
-          break
-        elsif (a > Math.sqrt(i))
-          break
-        end
-      end
-      if(ip)
-        ar.push(i)
-      end
-      i = i+1
-    end 
-    return ar
+  attr_accessor :upperlimit, :prime_array, :prime_candidate, :errormessage
+  def initialize(upperlimit)
+    @upperlimit = upperlimit
   end
 
+  def geterrormessage
+    unless @upperlimit.is_a? Integer
+      return "n must be an integer."
+    end
+    if @upperlimit < 0
+      return "n must be greater than 0."
+    end
+    return ""
+  end
+
+  def isvalidinput
+    return (geterrormessage == "")
+  end
+
+  def is_candidate_prime
+    is_prime = true
+    @prime_array.each do |prime|
+      if (@prime_candidate % prime == 0)
+        is_prime = false
+        break
+      elsif (prime > Math.sqrt(@prime_candidate))
+        break
+      end
+    end
+    return is_prime
+  end
+
+  def prime_not_upper_than
+    if (not isvalidinput)
+      puts @errormessage
+      return nil
+    end
+
+    if (@upperlimit <= 1)
+      return []
+    end
+
+    @prime_array = [2]
+    @prime_candidate = 3
+    while (@prime_candidate < @upperlimit) do
+      if is_candidate_prime
+        @prime_array.push(@prime_candidate)
+      end
+      @prime_candidate = @prime_candidate+1
+    end 
+    return @prime_array
+  end
 end
 
 if __FILE__ == $0
-  puts PrimeGetter.prime_not_upper_than(ARGV[0].to_i)
+  prime = PrimeGetter.new(ARGV[0].to_i)
+  puts prime.prime_not_upper_than
 end
 
 # Get prime numbers not upper than maximum number
